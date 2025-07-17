@@ -1,0 +1,44 @@
+@model TelefonRehberi.Models.Kisi
+
+<h2>Yeni Kişi Ekle</h2>
+
+<form asp-action="Create" method="post">
+    <div>
+        <label>Ad:</label>
+        <input asp-for="Ad" />
+        <span asp-validation-for="Ad" style="color:red"></span>
+    </div>
+
+    <div>
+        <label>Soyad:</label>
+        <input asp-for="Soyad" />
+        <span asp-validation-for="Soyad" style="color:red"></span>
+    </div>
+
+    <div>
+        <label>Telefon:</label>
+        <input asp-for="Telefon" />
+        <span asp-validation-for="Telefon" style="color:red"></span>
+    </div>
+
+    <div>
+        <label>Email:</label>
+        <input asp-for="Email" />
+        <span asp-validation-for="Email" style="color:red"></span>
+    </div>
+
+   <div class="form-group">
+    <label asp-for="Departman" class="control-label"></label>
+    <select asp-for="Departman" class="form-control" asp-items="new SelectList(ViewBag.Departmanlar)">
+        <option value="">-- Departman Seçin --</option>
+    </select>
+    <span asp-validation-for="Departman" class="text-danger"></span>
+</div>
+
+    <button type="submit">Kaydet</button>
+    <a asp-action="Index">İptal</a>
+</form>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

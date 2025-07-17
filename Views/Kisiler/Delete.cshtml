@@ -1,0 +1,18 @@
+@model TelefonRehberi.Models.Kisi
+
+<h2>Kişi Sil</h2>
+
+<h4>Bu kişiyi silmek istediğinize emin misiniz?</h4>
+
+<div>
+    <strong>Ad:</strong> @Model.Ad <br />
+    <strong>Soyad:</strong> @Model.Soyad <br />
+    <strong>Telefon:</strong> @Model.Telefon <br />
+    <strong>Email:</strong> @Model.Email <br />
+</div>
+
+<form asp-action="Delete" method="post">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit">Sil</button>
+    <a asp-action="Index">İptal</a>
+</form>

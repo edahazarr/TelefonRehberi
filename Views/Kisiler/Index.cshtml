@@ -1,0 +1,86 @@
+@model X.PagedList.IPagedList<TelefonRehberi.Models.Kisi>
+@using X.PagedList
+@using X.PagedList.Mvc.Core
+@using X.PagedList.Web.Common
+<div class="container mt-4">
+@if (TempData["Mesaj"] != null)
+{
+    <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 9999">
+        <div id="liveToast" class="toast align-items-center text-white bg-success border-0 show" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    @TempData["Mesaj"]
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const toastEl = document.getElementById('liveToast');
+        const toast = new bootstrap.Toast(toastEl, { delay: 3000 });
+        toast.show();
+    </script>
+}
+
+    @if (!string.IsNullOrEmpty(Context.Request.Query["arama"]))
+    {
+        <h5>"@Context.Request.Query["arama"]" için arama sonuçları:</h5>
+    }
+    else
+    {
+        <h5>Tüm Kayıtlar</h5>
+    }
+
+    <form asp-controller="Kisiler" asp-action="Index" method="get" class="mb-3">
+        <div class="input-group">
+            <input type="text" name="arama" value="@Context.Request.Query["arama"]" class="form-control" placeholder="İsim, telefon veya departman ara..." />
+            <button type="submit" class="btn btn-outline-primary">Ara</button>
+        </div>
+    </form>
+
+    <a asp-action="Create" class="btn btn-success mb-3">➕ Yeni Kişi Ekle</a>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-warning">🔍 Aramanızla eşleşen kayıt bulunamadı.</div>
+    }
+    else
+    {
+        <table class="table table-bordered table-striped">
+            <thead class="table-dark">
+                <tr>
+                    <th>Ad</th>
+                    <th>Soyad</th>
+                    <th>Telefon</th>
+                    <th>Email</th>
+                    <th>Departman</th>
+                    <th>İşlemler</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var kisi in Model)
+                {
+                    <tr>
+                        <td>@kisi.Ad</td>
+                        <td>@kisi.Soyad</td>
+                        <td>@kisi.Telefon</td>
+                        <td>@kisi.Email</td>
+                        <td>@kisi.Departman</td>
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@kisi.Id" class="btn btn-sm btn-warning">✏️ Güncelle</a>
+                            <a asp-action="Delete" asp-route-id="@kisi.Id" class="btn btn-sm btn-danger">🗑️ Sil</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    
+
+</div>
+<div class="d-flex justify-content-center mt-4">
+    @Html.PagedListPager(Model, sayfa => Url.Action("Index", new { sayfa, arama = Context.Request.Query["arama"] }))
+</div>
+
+
