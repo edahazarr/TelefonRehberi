@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using TelefonRehberi.Models;
 using TelefonRehberi.Data;
-using X.PagedList; // <-- ToPagedList için gerekli
+using X.PagedList;  // Sayfalama (ToPagedList) için gerekli kütüphane
 
 namespace TelefonRehberi.Controllers
 {
@@ -15,15 +15,16 @@ namespace TelefonRehberi.Controllers
         }
 
         // Kişi listesini getir (sayfalama + arama destekli)
-        public IActionResult Index(string arama, int sayfa = 1)
+        public IActionResult Index(string arama, int sayfa = 1) 
+        // IActionResult, farklı türde yanıtlar döndürebilmemizi sağlar (View, Redirect, Json, vs.)
 {
-    var kisiler = from k in _context.Kisiler
+    var kisiler = from k in _context.Kisiler // Kisiler tablosundaki tüm kişileri seçer ve kisiler adlı sorgu değişkenine atar.
                   select k;
 
-    if (!string.IsNullOrEmpty(arama))
+    if (!string.IsNullOrEmpty(arama))//arama kutusu boş mu kontrolü
     {
-        arama = arama.ToLower();
-        kisiler = kisiler.Where(k =>
+        arama = arama.ToLower();//büyük/küçük harf farkı ortadan kaldırılır.girilen arama küçük harfe çevrilir.
+        kisiler = kisiler.Where(k => //kişiler sorgusuna filtre eklenir.belli alanlar seçilir;
             k.Ad.ToLower().Contains(arama) ||
             k.Soyad.ToLower().Contains(arama) ||
             k.Telefon.ToLower().Contains(arama) ||
@@ -31,9 +32,9 @@ namespace TelefonRehberi.Controllers
             k.Departman.ToLower().Contains(arama));
     }
 
-    int sayfaBoyutu = 10;
+    int sayfaBoyutu = 10; //sayfadaki max kayıt sayısı
     var sayfalananKisiler = kisiler.OrderBy(k => k.Id).ToPagedList(sayfa, sayfaBoyutu);
-
+//kisiler Id'e göre sıralanır.
     return View(sayfalananKisiler);
 }
 
@@ -67,7 +68,7 @@ namespace TelefonRehberi.Controllers
       [HttpPost]
 public IActionResult Create(Kisi kisi)
 {
-      if (ModelState.IsValid)
+      if (ModelState.IsValid) //Gerekli alanlar dolu mu, geçerli mi kontrol edilir (model validation).
     {
         _context.Add(kisi);
         _context.SaveChanges();
@@ -113,7 +114,7 @@ public IActionResult Create(Kisi kisi)
         [HttpPost]
         public IActionResult Edit(Kisi kisi)
         {
-      if (ModelState.IsValid)
+      if (ModelState.IsValid)//burada veri doğrulaması yapılıyor.
     {
         _context.Kisiler.Update(kisi);
         _context.SaveChanges();
