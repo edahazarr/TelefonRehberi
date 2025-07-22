@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using TelefonRehberi.Models;
 using TelefonRehberi.Data;
-using X.PagedList;  // Sayfalama (ToPagedList) için gerekli kütüphane
+using X.PagedList;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace TelefonRehberi.Controllers
 {
@@ -14,117 +16,84 @@ namespace TelefonRehberi.Controllers
             _context = context;
         }
 
-        // Kişi listesini getir (sayfalama + arama destekli)
-        public IActionResult Index(string arama, int sayfa = 1) 
-        // IActionResult, farklı türde yanıtlar döndürebilmemizi sağlar (View, Redirect, Json, vs.)
-{
-    var kisiler = from k in _context.Kisiler // Kisiler tablosundaki tüm kişileri seçer ve kisiler adlı sorgu değişkenine atar.
-                  select k;
+        public IActionResult Index(string adSoyadAra, string emailAra, string departmanAra, int sayfa = 1)
+        {
+            var kisiler = _context.Kisiler.AsQueryable();
 
-    if (!string.IsNullOrEmpty(arama))//arama kutusu boş mu kontrolü
-    {
-        arama = arama.ToLower();//büyük/küçük harf farkı ortadan kaldırılır.girilen arama küçük harfe çevrilir.
-        kisiler = kisiler.Where(k => //kişiler sorgusuna filtre eklenir.belli alanlar seçilir;
-            k.Ad.ToLower().Contains(arama) ||
-            k.Soyad.ToLower().Contains(arama) ||
-            k.Telefon.ToLower().Contains(arama) ||
-            k.Email.ToLower().Contains(arama) ||
-            k.Departman.ToLower().Contains(arama));
-    }
+            if (!string.IsNullOrEmpty(adSoyadAra))
+            {
+                var aranan = adSoyadAra.ToLower();
+                kisiler = kisiler.Where(k =>
+                    k.Ad.ToLower().Contains(aranan) ||
+                    k.Soyad.ToLower().Contains(aranan));
+            }
 
-    int sayfaBoyutu = 10; //sayfadaki max kayıt sayısı
-    var sayfalananKisiler = kisiler.OrderBy(k => k.Id).ToPagedList(sayfa, sayfaBoyutu);
-//kisiler Id'e göre sıralanır.
-    return View(sayfalananKisiler);
-}
+            if (!string.IsNullOrEmpty(emailAra))
+            {
+                var aranan = emailAra.ToLower();
+                kisiler = kisiler.Where(k => k.Email.ToLower().Contains(aranan));
+            }
 
-        // Kişi ekleme formu (GET)
+            if (!string.IsNullOrEmpty(departmanAra))
+            {
+                var aranan = departmanAra.ToLower();
+                kisiler = kisiler.Where(k => k.Departman.ToLower().Contains(aranan));
+            }
+
+            int sayfaBoyutu = 10;
+            var sayfalananKisiler = kisiler.OrderBy(k => k.Id).ToPagedList(sayfa, sayfaBoyutu);
+            return View(sayfalananKisiler);
+        }
+
+        // GET: Create
         public IActionResult Create()
         {
-            ViewBag.Departmanlar = new List<string>
-            {
-                "Yazılım Geliştirme",
-                "Sistem ve Ağ Yönetimi",
-                "Bilgi Güvenliği",
-                "Veri Tabanı Yönetimi",
-                "Proje Yönetimi",
-                "Teknik Destek",
-                "Satış ve Pazarlama",
-                "İnsan Kaynakları",
-                "Finans ve Muhasebe",
-                "İdari İşler",
-                "Ürün Yönetimi",
-                "Kalite ve Test",
-                "Müşteri Hizmetleri",
-                "Eğitim ve Dökümantasyon",
-                "Donanım Destek",
-                "İç Denetim",
-                "Ar-Ge (Araştırma ve Geliştirme)"
-            };
+            var departmanlar = _context.Departmanlar.ToList();
+            ViewBag.Departmanlar = new SelectList(departmanlar, "Ad", "Ad");
             return View();
         }
 
-        // Kişi ekleme işlemi (POST)
-      [HttpPost]
-public IActionResult Create(Kisi kisi)
-{
-      if (ModelState.IsValid) //Gerekli alanlar dolu mu, geçerli mi kontrol edilir (model validation).
-    {
-        _context.Add(kisi);
-        _context.SaveChanges();
-        TempData["Mesaj"] = $"✅ {kisi.Ad} {kisi.Soyad} kişisi başarıyla eklendi.";
-        return RedirectToAction(nameof(Index));
-    }
+        // POST: Create
+        [HttpPost]
+        public IActionResult Create(Kisi kisi)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Add(kisi);
+                _context.SaveChanges();
+                TempData["Mesaj"] = $"✅ {kisi.Ad} {kisi.Soyad} kişisi başarıyla eklendi.";
+                return RedirectToAction(nameof(Index));
+            }
 
-    // Eğer form hatalıysa departman listesini tekrar ver
-    ViewBag.Departmanlar = new List<string>
-    {
-        "Yazılım Geliştirme",
-        "Sistem ve Ağ Yönetimi",
-        "Bilgi Güvenliği",
-        "Veri Tabanı Yönetimi",
-        "Proje Yönetimi",
-        "Teknik Destek",
-        "Satış ve Pazarlama",
-        "İnsan Kaynakları",
-        "Finans ve Muhasebe",
-        "İdari İşler",
-        "Ürün Yönetimi",
-        "Kalite ve Test",
-        "Müşteri Hizmetleri",
-        "Eğitim ve Dökümantasyon",
-        "Donanım Destek",
-        "İç Denetim",
-        "Ar-Ge (Araştırma ve Geliştirme)"
-    };
-    return View(kisi);
-}
+            ViewBag.Departmanlar = new SelectList(_context.Departmanlar.ToList(), "Ad", "Ad");
+            return View(kisi);
+        }
 
-        // Güncelleme formunu getir (GET)
         public IActionResult Edit(int id)
         {
             var kisi = _context.Kisiler.Find(id);
             if (kisi == null)
                 return NotFound();
 
+            ViewBag.Departmanlar = new SelectList(_context.Departmanlar.ToList(), "Ad", "Ad");
             return View(kisi);
         }
 
-        // Güncelleme işlemi (POST)
         [HttpPost]
         public IActionResult Edit(Kisi kisi)
         {
-      if (ModelState.IsValid)//burada veri doğrulaması yapılıyor.
-    {
-        _context.Kisiler.Update(kisi);
-        _context.SaveChanges();
-        TempData["Mesaj"] = $"✏️ {kisi.Ad} {kisi.Soyad} kişisi başarıyla güncellendi.";
-        return RedirectToAction("Index");
-    }
-    return View(kisi);
+            if (ModelState.IsValid)
+            {
+                _context.Kisiler.Update(kisi);
+                _context.SaveChanges();
+                TempData["Mesaj"] = $"✏️ {kisi.Ad} {kisi.Soyad} kişisi başarıyla güncellendi.";
+                return RedirectToAction("Index");
+            }
+
+            ViewBag.Departmanlar = new SelectList(_context.Departmanlar.ToList(), "Ad", "Ad");
+            return View(kisi);
         }
 
-        // Silme onay sayfası (GET)
         public IActionResult Delete(int id)
         {
             var kisi = _context.Kisiler.Find(id);
@@ -134,19 +103,18 @@ public IActionResult Create(Kisi kisi)
             return View(kisi);
         }
 
-        // Silme işlemi (POST)
         [HttpPost, ActionName("Delete")]
         public IActionResult DeleteConfirmed(int id)
         {
             var kisi = _context.Kisiler.Find(id);
-    if (kisi != null)
-    {
-        _context.Kisiler.Remove(kisi);
-        _context.SaveChanges();
-        TempData["Mesaj"] = $"🗑️ {kisi.Ad} {kisi.Soyad} kişisi başarıyla silindi.";
-    }
+            if (kisi != null)
+            {
+                _context.Kisiler.Remove(kisi);
+                _context.SaveChanges();
+                TempData["Mesaj"] = $"🗑️ {kisi.Ad} {kisi.Soyad} kişisi başarıyla silindi.";
+            }
 
-    return RedirectToAction("Index");
+            return RedirectToAction("Index");
         }
     }
 }

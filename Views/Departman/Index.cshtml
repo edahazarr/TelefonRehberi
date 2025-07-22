@@ -1,0 +1,32 @@
+@model List<TelefonRehberi.Models.Departman>
+
+<h2>Departmanlar</h2>
+
+@if (TempData["Mesaj"] != null)
+{
+    <div class="alert alert-success">@TempData["Mesaj"]</div>
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Departman Adı</th>
+            <th>İşlem</th>
+        </tr>
+    </thead>
+    <tbody>
+        @for (int i = 0; i < Model.Count; i++)
+        {
+            <tr>
+                <td>@(i + 1)</td>
+                <td>@Model[i].Ad</td>
+                <td>
+                    <a asp-action="Delete" asp-route-id="@Model[i].Id" class="btn btn-danger btn-sm">Sil</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a asp-action="Create" class="btn btn-success">+ Yeni Departman</a>

@@ -11,6 +11,7 @@ namespace TelefonRehberi.Data
         }
 
         public DbSet<Kisi> Kisiler { get; set; }
+        public DbSet<Departman> Departmanlar { get; set; }
     }
 }
 /*options içinde veritabanı türü, bağlantı bilgisi vb. yer alır.

@@ -1,0 +1,18 @@
+@model TelefonRehberi.Models.Departman
+
+<h2>Yeni Departman Ekle</h2>
+
+<form asp-action="Create" method="post">
+    <div>
+        <label>Departman Adı</label>
+        <input asp-for="Ad" class="form-control" />
+        <span asp-validation-for="Ad" style="color:red"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary mt-2">Kaydet</button>
+    <a asp-action="Index" class="btn btn-secondary mt-2">İptal</a>
+</form>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

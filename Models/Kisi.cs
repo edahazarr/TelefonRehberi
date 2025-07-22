@@ -1,5 +1,7 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 namespace TelefonRehberi.Models
+
 {public class Kisi
 {
     public int Id { get; set; }

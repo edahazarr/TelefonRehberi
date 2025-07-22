@@ -2,6 +2,7 @@
 @using X.PagedList
 @using X.PagedList.Mvc.Core
 @using X.PagedList.Web.Common
+
 <div class="container mt-4">
 @if (TempData["Mesaj"] != null)
 {
@@ -23,64 +24,72 @@
     </script>
 }
 
-    @if (!string.IsNullOrEmpty(Context.Request.Query["arama"]))
-    {
-        <h5>"@Context.Request.Query["arama"]" için arama sonuçları:</h5>
-    }
-    else
-    {
-        <h5>Tüm Kayıtlar</h5>
-    }
+<h5>Kayıtlar</h5>
 
-    <form asp-controller="Kisiler" asp-action="Index" method="get" class="mb-3">
-        <div class="input-group">
-            <input type="text" name="arama" value="@Context.Request.Query["arama"]" class="form-control" placeholder="İsim, telefon veya departman ara..." />
-            <button type="submit" class="btn btn-outline-primary">Ara</button>
+<!-- ✅ Çoklu arama alanları -->
+<form asp-controller="Kisiler" asp-action="Index" method="get" class="mb-3">
+    <div class="row g-2">
+        <div class="col-md-3">
+            <input type="text" name="adSoyadAra" value="@Context.Request.Query["adSoyadAra"]" class="form-control" placeholder="Ad veya Soyad ara..." />
         </div>
-    </form>
+        <div class="col-md-3">
+            <input type="text" name="emailAra" value="@Context.Request.Query["emailAra"]" class="form-control" placeholder="Email ara..." />
+        </div>
+        <div class="col-md-3">
+            <input type="text" name="departmanAra" value="@Context.Request.Query["departmanAra"]" class="form-control" placeholder="Departman ara..." />
+        </div>
+        <div class="col-md-3">
+            <button type="submit" class="btn btn-outline-primary w-100">Ara</button>
+        </div>
+    </div>
+</form>
 
-    <a asp-action="Create" class="btn btn-success mb-3">➕ Yeni Kişi Ekle</a>
+<a asp-action="Create" class="btn btn-success mb-3">➕ Yeni Kişi Ekle</a>
 
-    @if (!Model.Any())
-    {
-        <div class="alert alert-warning">🔍 Aramanızla eşleşen kayıt bulunamadı.</div>
-    }
-    else
-    {
-        <table class="table table-bordered table-striped">
-            <thead class="table-dark">
+@if (!Model.Any())
+{
+    <div class="alert alert-warning">🔍 Aramanızla eşleşen kayıt bulunamadı.</div>
+}
+else
+{
+    <table class="table table-bordered table-striped">
+        <thead class="table-dark">
+            <tr>
+                <th>Ad</th>
+                <th>Soyad</th>
+                <th>Telefon</th>
+                <th>Email</th>
+                <th>Departman</th>
+                <th>İşlemler</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var kisi in Model)
+            {
                 <tr>
-                    <th>Ad</th>
-                    <th>Soyad</th>
-                    <th>Telefon</th>
-                    <th>Email</th>
-                    <th>Departman</th>
-                    <th>İşlemler</th>
+                    <td>@kisi.Ad</td>
+                    <td>@kisi.Soyad</td>
+                    <td>@kisi.Telefon</td>
+                    <td>@kisi.Email</td>
+                    <td>@kisi.Departman</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@kisi.Id" class="btn btn-sm btn-warning">✏️ Güncelle</a>
+                        <a asp-action="Delete" asp-route-id="@kisi.Id" class="btn btn-sm btn-danger">🗑️ Sil</a>
+                    </td>
                 </tr>
-            </thead>
-            <tbody>
-                @foreach (var kisi in Model)
-                {
-                    <tr>
-                        <td>@kisi.Ad</td>
-                        <td>@kisi.Soyad</td>
-                        <td>@kisi.Telefon</td>
-                        <td>@kisi.Email</td>
-                        <td>@kisi.Departman</td>
-                        <td>
-                            <a asp-action="Edit" asp-route-id="@kisi.Id" class="btn btn-sm btn-warning">✏️ Güncelle</a>
-                            <a asp-action="Delete" asp-route-id="@kisi.Id" class="btn btn-sm btn-danger">🗑️ Sil</a>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    }
-    
+            }
+        </tbody>
+    </table>
+}
 
 </div>
+
+<!-- ✅ Sayfalama -->
 <div class="d-flex justify-content-center mt-4">
-    @Html.PagedListPager(Model, sayfa => Url.Action("Index", new { sayfa, arama = Context.Request.Query["arama"] }))
+    @Html.PagedListPager(Model, sayfa => Url.Action("Index", new {
+        sayfa,
+        adSoyadAra = Context.Request.Query["adSoyadAra"],
+        emailAra = Context.Request.Query["emailAra"],
+        departmanAra = Context.Request.Query["departmanAra"]
+    }))
 </div>
-
-
