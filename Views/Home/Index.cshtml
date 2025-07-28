@@ -1,14 +1,38 @@
-﻿@model List<TelefonRehberi.Models.Kisi>
+﻿@model X.PagedList.IPagedList<TelefonRehberi.Models.Kisi>
+@using X.PagedList.Mvc.Core
+@using X.PagedList
+
 @{
-    ViewData["Title"] = "Ana Sayfa";
+    ViewData["Title"] = "Kişi Listesi";
 }
 
 <div class="container mt-4">
-    <h2 class="mb-4 text-center">📋 Kişi Listesi</h2>
+
+    <h2>Kayıtlı Kişiler</h2>
+
+    <!-- 🔍 Arama Formu -->
+    <form asp-action="Index" method="get" class="mb-4">
+        <div class="row g-2">
+            <div class="col-md-3">
+                <input type="text" name="adSoyadAra" value="@Context.Request.Query["adSoyadAra"]" class="form-control" placeholder="Ad veya Soyad Ara" />
+            </div>
+            <div class="col-md-3">
+                <input type="text" name="emailAra" value="@Context.Request.Query["emailAra"]" class="form-control" placeholder="Email Ara" />
+            </div>
+            <div class="col-md-3">
+                <input type="text" name="departmanAra" value="@Context.Request.Query["departmanAra"]" class="form-control" placeholder="Departman Ara" />
+            </div>
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-primary w-100">Ara</button>
+            </div>
+        </div>
+    </form>
+
+    <a asp-controller="Kisiler" asp-action="Create" class="btn btn-success mb-3">➕ Yeni Kişi Ekle</a>
 
     @if (!Model.Any())
     {
-        <div class="alert alert-warning">Hiç kişi kaydı bulunamadı.</div>
+        <div class="alert alert-warning">📭 Henüz kayıtlı kişi bulunmamaktadır.</div>
     }
     else
     {
@@ -35,5 +59,17 @@
                 }
             </tbody>
         </table>
+
+        <div class="d-flex justify-content-center mt-4">
+            @Html.PagedListPager(Model, sayfa =>
+                Url.Action("Index", "Home", new
+                {
+                    sayfa,
+                    adSoyadAra = Context.Request.Query["adSoyadAra"],
+                    emailAra = Context.Request.Query["emailAra"],
+                    departmanAra = Context.Request.Query["departmanAra"]
+                }))
+        </div>
     }
+
 </div>

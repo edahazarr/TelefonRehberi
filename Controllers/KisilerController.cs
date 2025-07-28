@@ -12,18 +12,20 @@ namespace TelefonRehberi.Controllers
         private readonly ApplicationDbContext _context;
 
         public KisilerController(ApplicationDbContext context)
+        // ApplicationDbContext nesnesini dependency injection ile alır ve veritabanı işlemleri için _context değişkenine atar.
         {
             _context = context;
         }
 
-        public IActionResult Index(string adSoyadAra, string emailAra, string departmanAra, int sayfa = 1)
-        {
-            var kisiler = _context.Kisiler.AsQueryable();
+    public IActionResult Index(string adSoyadAra, string emailAra, string departmanAra, int page = 1)
 
-            if (!string.IsNullOrEmpty(adSoyadAra))
+        {
+            var kisiler = _context.Kisiler.AsQueryable();//kişiler tablosundaki verileri alır ama sorgu çalıştırmaz.
+
+            if (!string.IsNullOrEmpty(adSoyadAra)) 
             {
-                var aranan = adSoyadAra.ToLower();
-                kisiler = kisiler.Where(k =>
+                var aranan = adSoyadAra.ToLower();// küçük harfe çevrilir.
+                kisiler = kisiler.Where(k =>// k,kisilerden biridir.ad ve soyad içinde aranan'ı arar.
                     k.Ad.ToLower().Contains(aranan) ||
                     k.Soyad.ToLower().Contains(aranan));
             }
@@ -40,8 +42,8 @@ namespace TelefonRehberi.Controllers
                 kisiler = kisiler.Where(k => k.Departman.ToLower().Contains(aranan));
             }
 
-            int sayfaBoyutu = 10;
-            var sayfalananKisiler = kisiler.OrderBy(k => k.Id).ToPagedList(sayfa, sayfaBoyutu);
+            int sayfaBoyutu = 10;// bir sayfadaki tutula kayıt sayısı
+            var sayfalananKisiler = kisiler.OrderBy(k => k.Id).ToPagedList(page, sayfaBoyutu);
             return View(sayfalananKisiler);
         }
 
@@ -57,21 +59,21 @@ namespace TelefonRehberi.Controllers
         [HttpPost]
         public IActionResult Create(Kisi kisi)
         {
-            if (ModelState.IsValid)
+            if (ModelState.IsValid)//formdan gelen verilerin Kisi modelindeki kurallara uyup uymadığını kontrol eder.
             {
                 _context.Add(kisi);
                 _context.SaveChanges();
                 TempData["Mesaj"] = $"✅ {kisi.Ad} {kisi.Soyad} kişisi başarıyla eklendi.";
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index)); // kullanıcı ekleme,silme gibi işlem yaptıktan sonra başka sayfaya yönlendirilir.
             }
 
             ViewBag.Departmanlar = new SelectList(_context.Departmanlar.ToList(), "Ad", "Ad");
             return View(kisi);
         }
 
-        public IActionResult Edit(int id)
+        public IActionResult Edit(int id) // id birincil anahtar değeri
         {
-            var kisi = _context.Kisiler.Find(id);
+            var kisi = _context.Kisiler.Find(id); // birincil anahtara göre kişi bulunur.
             if (kisi == null)
                 return NotFound();
 

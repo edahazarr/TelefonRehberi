@@ -6,7 +6,7 @@ namespace TelefonRehberi.Data
     public class ApplicationDbContext : DbContext //DbContext sınıfından türemiştir.
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) //DbContext’e özel ayar içeren parametre
-            : base(options)
+            : base(options) 
         {
         }
 

@@ -1,7 +1,9 @@
 @model X.PagedList.IPagedList<TelefonRehberi.Models.Kisi>
 @using X.PagedList
 @using X.PagedList.Mvc.Core
-@using X.PagedList.Web.Common
+
+
+
 
 <div class="container mt-4">
 @if (TempData["Mesaj"] != null)
@@ -72,6 +74,7 @@ else
                     <td>@kisi.Telefon</td>
                     <td>@kisi.Email</td>
                     <td>@kisi.Departman</td>
+                    
                     <td>
                         <a asp-action="Edit" asp-route-id="@kisi.Id" class="btn btn-sm btn-warning">✏️ Güncelle</a>
                         <a asp-action="Delete" asp-route-id="@kisi.Id" class="btn btn-sm btn-danger">🗑️ Sil</a>
