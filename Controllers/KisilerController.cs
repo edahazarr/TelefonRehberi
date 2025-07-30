@@ -4,6 +4,9 @@ using TelefonRehberi.Data;
 using X.PagedList;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using ClosedXML.Excel;
+using System.IO;
+
 
 namespace TelefonRehberi.Controllers
 {
@@ -70,6 +73,47 @@ namespace TelefonRehberi.Controllers
             ViewBag.Departmanlar = new SelectList(_context.Departmanlar.ToList(), "Ad", "Ad");
             return View(kisi);
         }
+        public IActionResult ExportToExcel()
+        {
+            var kisiler = _context.Kisiler.ToList(); // Include yok!
+
+            using (var workbook = new XLWorkbook()) //ClosedXML ile yeni bir Excel dosyası (workbook) oluşturur.
+
+    {
+        var worksheet = workbook.Worksheets.Add("Kisiler"); //"Kisiler" adında yeni bir çalışma sayfası ekler.
+
+        // Başlıklar
+        worksheet.Cell(1, 1).Value = "Ad";
+        worksheet.Cell(1, 2).Value = "Soyad";
+        worksheet.Cell(1, 3).Value = "Telefon";
+        worksheet.Cell(1, 4).Value = "Email";
+
+        // Veriler
+        for (int i = 0; i < kisiler.Count; i++) //kisiler listesindeki her bir kişi için döngü başlatır.
+
+
+        {
+            worksheet.Cell(i + 2, 1).Value = kisiler[i].Ad;
+            worksheet.Cell(i + 2, 2).Value = kisiler[i].Soyad;
+            worksheet.Cell(i + 2, 3).Value = kisiler[i].Telefon;
+            worksheet.Cell(i + 2, 4).Value = kisiler[i].Email;
+        }
+
+        using (var stream = new MemoryStream()) //Excel dosyasını bellekte tutmak için MemoryStream nesnesi oluşturur.
+
+        {
+            workbook.SaveAs(stream);
+            var content = stream.ToArray();
+            //Stream içeriğini byte[] dizisine çevirir.File() metodu bunu kullanarak dosya dönebilir.
+            return File(content, 
+                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", 
+                        "Kisiler.xlsx");
+        }
+    }
+
+            return View(); 
+        }
+
 
         public IActionResult Edit(int id) // id birincil anahtar değeri
         {
