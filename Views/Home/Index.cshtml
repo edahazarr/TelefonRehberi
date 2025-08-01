@@ -29,6 +29,9 @@
     </form>
 
     <a asp-controller="Kisiler" asp-action="Create" class="btn btn-success mb-3">➕ Yeni Kişi Ekle</a>
+<a class="btn btn-outline-success mb-3" href="/Kisiler/ExportToExcel">
+    📥 Excel'e Aktar
+</a>
 
     @if (!Model.Any())
     {
