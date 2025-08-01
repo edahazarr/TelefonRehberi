@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using TelefonRehberi.Data;
 using TelefonRehberi.Models;
-
+using X.PagedList;
 namespace TelefonRehberi.Controllers
 {
     public class DepartmanController : Controller
@@ -13,9 +13,13 @@ namespace TelefonRehberi.Controllers
             _context = context;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(int page = 1)
         {
-            var departmanlar = _context.Departmanlar.ToList();
+            int sayfaBoyutu = 10; // Her sayfada 10 departman göster
+            var departmanlar = _context.Departmanlar
+                .OrderBy(d => d.Ad)
+                .ToPagedList(page, sayfaBoyutu);
+
             return View(departmanlar);
         }
         public IActionResult Create()

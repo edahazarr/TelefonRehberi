@@ -93,10 +93,10 @@ else
 
 <!-- ✅ Sayfalama -->
 <div class="d-flex justify-content-center mt-4">
-    @Html.PagedListPager(Model, sayfa => Url.Action("Index", new {
-        sayfa,
-        adSoyadAra = Context.Request.Query["adSoyadAra"],
-        emailAra = Context.Request.Query["emailAra"],
-        departmanAra = Context.Request.Query["departmanAra"]
-    }))
+    @Html.PagedListPager(Model, page => Url.Action("Index", new {
+    page = page, // controller’daki parametreye karşılık gelir
+    adSoyadAra = Context.Request.Query["adSoyadAra"],
+    emailAra = Context.Request.Query["emailAra"],
+    departmanAra = Context.Request.Query["departmanAra"]
+}))
 </div>

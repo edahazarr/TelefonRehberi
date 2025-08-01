@@ -1,4 +1,6 @@
-@model List<TelefonRehberi.Models.Departman>
+
+@model IPagedList<TelefonRehberi.Models.Departman>
+@using X.PagedList.Mvc.Core
 
 <h2>Departmanlar</h2>
 
@@ -30,3 +32,6 @@
 </table>
 
 <a asp-action="Create" class="btn btn-success">+ Yeni Departman</a>
+<div class="d-flex justify-content-center mt-4">
+    @Html.PagedListPager(Model, page => Url.Action("Index", new { page }))
+</div>
