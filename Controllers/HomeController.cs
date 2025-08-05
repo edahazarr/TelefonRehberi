@@ -43,14 +43,16 @@ namespace TelefonRehberi.Controllers
 
     // Departman araması
   if (!string.IsNullOrEmpty(departmanAra))
-{
-    var aranan = departmanAra.Trim().ToLower();
-
-    kisiler = kisiler.Where(k =>
-        k.Departman != null &&
-        k.Departman.ToLower().Contains(aranan));
-}
-
+            {
+                var aranan = departmanAra.ToLower();
+                kisiler = kisiler.Where(k => k.Departman.ToLower().Contains(aranan));
+            }
+              var departmanListesi = _context.Departmanlar
+                                   .Select(d => d.Ad)
+                                   .Distinct()
+                                   .OrderBy(d => d)
+                                   .ToList();
+ViewBag.Departmanlar = departmanListesi;
     int sayfaBoyutu = 10;
     var sayfalananKisiler = kisiler.OrderBy(k => k.Id).ToPagedList(sayfa, sayfaBoyutu);
     return View(sayfalananKisiler);

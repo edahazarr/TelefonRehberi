@@ -11,22 +11,30 @@
     <h2>Kayıtlı Kişiler</h2>
 
     <!-- 🔍 Arama Formu -->
-    <form asp-action="Index" method="get" class="mb-4">
-        <div class="row g-2">
-            <div class="col-md-3">
-                <input type="text" name="adSoyadAra" value="@Context.Request.Query["adSoyadAra"]" class="form-control" placeholder="Ad veya Soyad Ara" />
-            </div>
-            <div class="col-md-3">
-                <input type="text" name="emailAra" value="@Context.Request.Query["emailAra"]" class="form-control" placeholder="Email Ara" />
-            </div>
-            <div class="col-md-3">
-                <input type="text" name="departmanAra" value="@Context.Request.Query["departmanAra"]" class="form-control" placeholder="Departman Ara" />
-            </div>
-            <div class="col-md-3">
-                <button type="submit" class="btn btn-primary w-100">Ara</button>
-            </div>
+    <form asp-controller="Home" asp-action="Index" method="get" class="mb-3">
+    <div class="row g-2">
+        <div class="col-md-3">
+            <input type="text" name="adSoyadAra" value="@Context.Request.Query["adSoyadAra"]" class="form-control" placeholder="Ad veya Soyad ara..." />
         </div>
-    </form>
+        <div class="col-md-3">
+            <input type="text" name="emailAra" value="@Context.Request.Query["emailAra"]" class="form-control" placeholder="Email ara..." />
+        </div>
+        <div class="col-md-3">
+            <select name="departmanAra" class="form-control">
+                <option value="">Departman Seç</option>
+                @foreach (var d in ViewBag.Departmanlar as List<string>)
+                {
+                    var selectedAttr = Context.Request.Query["departmanAra"] == d ? "selected=\"selected\"" : "";
+                    @Html.Raw($"<option value=\"{d}\" {selectedAttr}>{d}</option>")
+                }
+            </select>
+        </div>
+        <div class="col-md-3">
+            <button type="submit" class="btn btn-outline-primary w-100">Ara</button>
+        </div>
+    </div>
+</form>
+
 
     <a asp-controller="Kisiler" asp-action="Create" class="btn btn-success mb-3">➕ Yeni Kişi Ekle</a>
 <a class="btn btn-outline-success mb-3" href="/Kisiler/ExportToExcel">
@@ -76,3 +84,8 @@
     }
 
 </div>
+<script>
+    document.getElementById("departmanSelect").addEventListener("change", function () {
+        this.form.submit();
+    });
+</script>

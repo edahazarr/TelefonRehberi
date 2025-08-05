@@ -44,6 +44,12 @@ namespace TelefonRehberi.Controllers
                 var aranan = departmanAra.ToLower();
                 kisiler = kisiler.Where(k => k.Departman.ToLower().Contains(aranan));
             }
+              var departmanListesi = _context.Departmanlar
+                                   .Select(d => d.Ad)
+                                   .Distinct()
+                                   .OrderBy(d => d)
+                                   .ToList();
+    ViewBag.Departmanlar = departmanListesi;
 
             int sayfaBoyutu = 10;// bir sayfadaki tutula kayıt sayısı
             var sayfalananKisiler = kisiler.OrderBy(k => k.Id).ToPagedList(page, sayfaBoyutu);

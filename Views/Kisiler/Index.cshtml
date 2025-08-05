@@ -38,7 +38,15 @@
             <input type="text" name="emailAra" value="@Context.Request.Query["emailAra"]" class="form-control" placeholder="Email ara..." />
         </div>
         <div class="col-md-3">
-            <input type="text" name="departmanAra" value="@Context.Request.Query["departmanAra"]" class="form-control" placeholder="Departman ara..." />
+       <select id="departmanSelect" name="departmanAra" class="form-control">
+    <option value="">Departman Seç</option>
+    @foreach (var d in (List<string>)ViewBag.Departmanlar)
+    {
+        var selectedAttr = Context.Request.Query["departmanAra"] == d ? "selected=\"selected\"" : "";
+        @Html.Raw($"<option value=\"{d}\" {selectedAttr}>{d}</option>")
+    }
+</select>
+
         </div>
         <div class="col-md-3">
             <button type="submit" class="btn btn-outline-primary w-100">Ara</button>
@@ -100,3 +108,9 @@ else
     departmanAra = Context.Request.Query["departmanAra"]
 }))
 </div>
+<script>
+    document.getElementById("departmanSelect").addEventListener("change", function () {
+        this.form.submit();
+    });
+</script>
+

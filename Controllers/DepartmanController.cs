@@ -17,7 +17,7 @@ namespace TelefonRehberi.Controllers
         {
             int sayfaBoyutu = 10; // Her sayfada 10 departman göster
             var departmanlar = _context.Departmanlar
-                .OrderBy(d => d.Ad)
+                .OrderBy(d => d.Id)
                 .ToPagedList(page, sayfaBoyutu);
 
             return View(departmanlar);
