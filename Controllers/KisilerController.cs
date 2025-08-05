@@ -44,12 +44,12 @@ namespace TelefonRehberi.Controllers
                 var aranan = departmanAra.ToLower();
                 kisiler = kisiler.Where(k => k.Departman.ToLower().Contains(aranan));
             }
-              var departmanListesi = _context.Departmanlar
-                                   .Select(d => d.Ad)
-                                   .Distinct()
-                                   .OrderBy(d => d)
-                                   .ToList();
-    ViewBag.Departmanlar = departmanListesi;
+            ViewBag.Departmanlar = _context.Kisiler
+    .Where(k => k.Departman != null)
+    .Select(k => k.Departman)
+    .Distinct()
+    .ToList();
+
 
             int sayfaBoyutu = 10;// bir sayfadaki tutula kayıt sayısı
             var sayfalananKisiler = kisiler.OrderBy(k => k.Id).ToPagedList(page, sayfaBoyutu);
@@ -79,46 +79,48 @@ namespace TelefonRehberi.Controllers
             ViewBag.Departmanlar = new SelectList(_context.Departmanlar.ToList(), "Ad", "Ad");
             return View(kisi);
         }
-        public IActionResult ExportToExcel()
-        {
-            var kisiler = _context.Kisiler.ToList(); // Include yok!
+        public IActionResult ExportToExcel(string? adSoyadAra, string? emailAra, string? departmanAra)
+{
+    var kisiler = _context.Kisiler.AsQueryable();
 
-            using (var workbook = new XLWorkbook()) //ClosedXML ile yeni bir Excel dosyası (workbook) oluşturur.
+    if (!string.IsNullOrEmpty(adSoyadAra))
+        kisiler = kisiler.Where(k => k.Ad.Contains(adSoyadAra) || k.Soyad.Contains(adSoyadAra));
 
+    if (!string.IsNullOrEmpty(emailAra))
+        kisiler = kisiler.Where(k => k.Email.Contains(emailAra));
+
+    if (!string.IsNullOrEmpty(departmanAra))
+        kisiler = kisiler.Where(k => k.Departman.Contains(departmanAra));
+
+    using (var workbook = new XLWorkbook())
     {
-        var worksheet = workbook.Worksheets.Add("Kisiler"); //"Kisiler" adında yeni bir çalışma sayfası ekler.
-
-        // Başlıklar
+        var worksheet = workbook.Worksheets.Add("Kisiler");
         worksheet.Cell(1, 1).Value = "Ad";
         worksheet.Cell(1, 2).Value = "Soyad";
         worksheet.Cell(1, 3).Value = "Telefon";
         worksheet.Cell(1, 4).Value = "Email";
+        worksheet.Cell(1, 5).Value = "Departman";
 
-        // Veriler
-        for (int i = 0; i < kisiler.Count; i++) //kisiler listesindeki her bir kişi için döngü başlatır.
-
-
+        int row = 2;
+        foreach (var kisi in kisiler)
         {
-            worksheet.Cell(i + 2, 1).Value = kisiler[i].Ad;
-            worksheet.Cell(i + 2, 2).Value = kisiler[i].Soyad;
-            worksheet.Cell(i + 2, 3).Value = kisiler[i].Telefon;
-            worksheet.Cell(i + 2, 4).Value = kisiler[i].Email;
+            worksheet.Cell(row, 1).Value = kisi.Ad;
+            worksheet.Cell(row, 2).Value = kisi.Soyad;
+            worksheet.Cell(row, 3).Value = kisi.Telefon;
+            worksheet.Cell(row, 4).Value = kisi.Email;
+            worksheet.Cell(row, 5).Value = kisi.Departman;
+            row++;
         }
 
-        using (var stream = new MemoryStream()) //Excel dosyasını bellekte tutmak için MemoryStream nesnesi oluşturur.
-
+        using (var stream = new MemoryStream())
         {
             workbook.SaveAs(stream);
             var content = stream.ToArray();
-            //Stream içeriğini byte[] dizisine çevirir.File() metodu bunu kullanarak dosya dönebilir.
-            return File(content, 
-                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", 
-                        "Kisiler.xlsx");
+            return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Kisiler.xlsx");
         }
     }
+}
 
-            return View(); 
-        }
 
 
         public IActionResult Edit(int id) // id birincil anahtar değeri

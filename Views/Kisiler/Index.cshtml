@@ -1,10 +1,6 @@
 @model X.PagedList.IPagedList<TelefonRehberi.Models.Kisi>
 @using X.PagedList
 @using X.PagedList.Mvc.Core
-
-
-
-
 <div class="container mt-4">
 @if (TempData["Mesaj"] != null)
 {
@@ -18,7 +14,6 @@
             </div>
         </div>
     </div>
-
     <script>
         const toastEl = document.getElementById('liveToast');
         const toast = new bootstrap.Toast(toastEl, { delay: 3000 });
@@ -38,22 +33,18 @@
             <input type="text" name="emailAra" value="@Context.Request.Query["emailAra"]" class="form-control" placeholder="Email ara..." />
         </div>
         <div class="col-md-3">
-       <select id="departmanSelect" name="departmanAra" class="form-control">
-    <option value="">Departman Seç</option>
-    @foreach (var d in (List<string>)ViewBag.Departmanlar)
-    {
-        var selectedAttr = Context.Request.Query["departmanAra"] == d ? "selected=\"selected\"" : "";
-        @Html.Raw($"<option value=\"{d}\" {selectedAttr}>{d}</option>")
-    }
-</select>
-
+            <input type="text" name="departmanAra" value="@Context.Request.Query["departmanAra"]" class="form-control" placeholder="Departman ara..." />
         </div>
         <div class="col-md-3">
             <button type="submit" class="btn btn-outline-primary w-100">Ara</button>
         </div>
     </div>
 </form>
-<a class="btn btn-outline-success mb-3" href="/Kisiler/ExportToExcel">
+<a class="btn btn-outline-success mb-3"  href="@Url.Action("ExportToExcel", "Kisiler", new {
+       adSoyadAra = Context.Request.Query["adSoyadAra"].ToString(),
+       emailAra = Context.Request.Query["emailAra"].ToString(),
+       departmanAra = Context.Request.Query["departmanAra"].ToString()
+   })">
     📥 Excel'e Aktar
 </a>
 
@@ -108,9 +99,3 @@ else
     departmanAra = Context.Request.Query["departmanAra"]
 }))
 </div>
-<script>
-    document.getElementById("departmanSelect").addEventListener("change", function () {
-        this.form.submit();
-    });
-</script>
-
