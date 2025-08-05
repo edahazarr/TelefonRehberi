@@ -21,40 +21,43 @@ namespace TelefonRehberi.Controllers
         }
 
     public IActionResult Index(string adSoyadAra, string emailAra, string departmanAra, int page = 1)
+{
+    var kisiler = _context.Kisiler.AsQueryable();
 
-        {
-            var kisiler = _context.Kisiler.AsQueryable();//kişiler tablosundaki verileri alır ama sorgu çalıştırmaz.
+    if (!string.IsNullOrEmpty(adSoyadAra))
+    {
+        var aranan = adSoyadAra.ToLower();
+        kisiler = kisiler.Where(k =>
+            k.Ad.ToLower().Contains(aranan) ||
+            k.Soyad.ToLower().Contains(aranan));
+    }
 
-            if (!string.IsNullOrEmpty(adSoyadAra)) 
-            {
-                var aranan = adSoyadAra.ToLower();// küçük harfe çevrilir.
-                kisiler = kisiler.Where(k =>// k,kisilerden biridir.ad ve soyad içinde aranan'ı arar.
-                    k.Ad.ToLower().Contains(aranan) ||
-                    k.Soyad.ToLower().Contains(aranan));
-            }
+    if (!string.IsNullOrEmpty(emailAra))
+    {
+        var aranan = emailAra.ToLower();
+        kisiler = kisiler.Where(k => k.Email.ToLower().Contains(aranan));
+    }
 
-            if (!string.IsNullOrEmpty(emailAra))
-            {
-                var aranan = emailAra.ToLower();
-                kisiler = kisiler.Where(k => k.Email.ToLower().Contains(aranan));
-            }
+    if (!string.IsNullOrEmpty(departmanAra))
+    {
+        var aranan = departmanAra.ToLower();
+        kisiler = kisiler.Where(k => k.Departman.ToLower().Contains(aranan));
+    }
 
-            if (!string.IsNullOrEmpty(departmanAra))
-            {
-                var aranan = departmanAra.ToLower();
-                kisiler = kisiler.Where(k => k.Departman.ToLower().Contains(aranan));
-            }
-            ViewBag.Departmanlar = _context.Kisiler
-    .Where(k => k.Departman != null)
-    .Select(k => k.Departman)
-    .Distinct()
-    .ToList();
+    ViewBag.Departmanlar = new SelectList(
+        _context.Kisiler
+            .Where(k => k.Departman != null)
+            .Select(k => k.Departman)
+            .Distinct()
+            .ToList(),
+        departmanAra
+    );
 
+    int sayfaBoyutu = 10;
+    var sayfalananKisiler = kisiler.OrderBy(k => k.Id).ToPagedList(page, sayfaBoyutu);
 
-            int sayfaBoyutu = 10;// bir sayfadaki tutula kayıt sayısı
-            var sayfalananKisiler = kisiler.OrderBy(k => k.Id).ToPagedList(page, sayfaBoyutu);
-            return View(sayfalananKisiler);
-        }
+    return View(sayfalananKisiler);
+}
 
         // GET: Create
         public IActionResult Create()

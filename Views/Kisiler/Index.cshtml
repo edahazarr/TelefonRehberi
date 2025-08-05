@@ -32,8 +32,8 @@
         <div class="col-md-3">
             <input type="text" name="emailAra" value="@Context.Request.Query["emailAra"]" class="form-control" placeholder="Email ara..." />
         </div>
-        <div class="col-md-3">
-            <input type="text" name="departmanAra" value="@Context.Request.Query["departmanAra"]" class="form-control" placeholder="Departman ara..." />
+         <div class="col-md-3">
+            @Html.DropDownList("departmanAra", (SelectList)ViewBag.Departmanlar, "Departman seç...", new { @class = "form-control" })
         </div>
         <div class="col-md-3">
             <button type="submit" class="btn btn-outline-primary w-100">Ara</button>
@@ -99,3 +99,19 @@ else
     departmanAra = Context.Request.Query["departmanAra"]
 }))
 </div>
+<!-- Sol alt köşeye hizalanmış Anasayfa butonu -->
+@{
+    var aramaYapildi = !string.IsNullOrWhiteSpace(Context.Request.Query["adSoyadAra"]) ||
+                       !string.IsNullOrWhiteSpace(Context.Request.Query["emailAra"]) ||
+                       !string.IsNullOrWhiteSpace(Context.Request.Query["departmanAra"]);
+}
+
+@if (aramaYapildi)
+{
+    <div class="d-flex justify-content-start mt-4 mb-3">
+        <a href="/Kisiler" class="btn btn-outline-secondary">
+            🏠 Anasayfaya Dön
+        </a>
+    </div>
+}
+
