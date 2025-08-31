@@ -2,43 +2,53 @@
 
 <h2>Yeni Kişi Ekle</h2>
 
+@Html.ValidationSummary(true, "", new { @class = "text-danger mb-2" })
+
 <form asp-action="Create" method="post">
-    <div>
+    @Html.AntiForgeryToken()
+
+    <div class="mb-2">
         <label>Ad:</label>
         <input asp-for="Ad" class="form-control" />
-        <span asp-validation-for="Ad" style="color:red"></span>
+        <span asp-validation-for="Ad" class="text-danger"></span>
     </div>
 
-    <div>
+    <div class="mb-2">
         <label>Soyad:</label>
         <input asp-for="Soyad" class="form-control" />
-        <span asp-validation-for="Soyad" style="color:red"></span>
+        <span asp-validation-for="Soyad" class="text-danger"></span>
     </div>
 
-    <div>
+    <div class="mb-2">
         <label>Telefon:</label>
         <input asp-for="Telefon" class="form-control" />
-        <span asp-validation-for="Telefon" style="color:red"></span>
+        <span asp-validation-for="Telefon" class="text-danger"></span>
     </div>
 
-    <div>
+    <div class="mb-2">
         <label>Email:</label>
         <input asp-for="Email" class="form-control" />
-        <span asp-validation-for="Email" style="color:red"></span>
+        <span asp-validation-for="Email" class="text-danger"></span>
     </div>
 
-    <div class="form-group">
-        <label asp-for="Departman" class="control-label"></label>
+    <div class="mb-2">
+        <label class="control-label">Departman</label>
         <select asp-for="Departman" class="form-control" asp-items="ViewBag.Departmanlar">
             <option value="">Departman seçiniz</option>
         </select>
         <span asp-validation-for="Departman" class="text-danger"></span>
     </div>
 
-    <button type="submit" class="btn btn-primary mt-3">Kaydet</button>
-    <a asp-action="Index" class="btn btn-secondary mt-3">İptal</a>
+    <!-- DİKKAT: Model DIŞI alan, name="password" -->
+    <div class="mb-3">
+        <label class="control-label">Şifre</label>
+        <input type="password" name="password" class="form-control" required />
+    </div>
+
+    <button type="submit" class="btn btn-primary mt-1">Kaydet</button>
+    <a asp-action="Index" class="btn btn-secondary mt-1">İptal</a>
 </form>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <partial name="_ValidationScriptsPartial" />
 }
