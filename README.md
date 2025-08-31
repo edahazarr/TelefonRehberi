@@ -31,27 +31,32 @@ Kurum içi telefon rehberi uygulaması. Kişi ve departman yönetimi, arama/filt
 
 ```
 TelefonRehberi/
-| **Controllers/**                     | MVC Controller katmanı |
-| ├── AuthController.cs                 | Kimlik doğrulama (Login/Logout) |
-| ├── DepartmanController.cs            | Departman CRUD işlemleri |
-| └── KisilerController.cs              | Kişi CRUD işlemleri |
-| **Data/**                            | Veritabanı bağlamı |
-| └── ApplicationDbContext.cs           | EF Core DbContext |
-| **Migrations/**                       | EF Core migration dosyaları |
-| **Models/**                           | Veri modelleri |
-| ├── Departman.cs                      | Departman modeli |
-| ├── ErrorViewModel.cs                 | Hata modeli |
-| └── Kisi.cs                           | Kişi modeli |
-| **Views/**                            | Razor View’lar |
-| ├── Auth/                             | Giriş-çıkış sayfaları |
-| ├── Departman/                        | Departman yönetim sayfaları |
-| ├── Kisiler/                          | Kişi yönetim sayfaları |
-| ├── Shared/                           | Ortak layout ve partial view’lar |
-| ├── _ViewImports.cshtml               | Razor view import ayarları |
-| └── _ViewStart.cshtml                 | Razor view başlangıç ayarları |
-| **wwwroot/**                          | Statik dosyalar (css, js, bootstrap) |
-| **Properties/**                       | Proje yapılandırma dosyaları |
-| Program.cs                            | Uygulama başlangıç noktası |
-| appsettings.Development.json          | Konfigürasyon dosyası (connection string vs.) |
-| TelefonRehberi.csproj                 | Proje dosyası |
+│── Controllers/ -> MVC Controller katmanı
+│ │── AuthController.cs -> Kimlik doğrulama (Login/Logout)
+│ │── DepartmanController.cs -> Departman CRUD işlemleri
+│ │── KisilerController.cs -> Kişi CRUD işlemleri
+│
+│── Data/
+│ │── ApplicationDbContext.cs -> EF Core DbContext
+│
+│── Migrations/ -> EF Core migration dosyaları
+│
+│── Models/ -> Veri modelleri
+│ │── Kisi.cs -> Kişi modeli
+│ │── Departman.cs -> Departman modeli
+│ │── ErrorViewModel.cs -> Hata modeli
+│
+│── Views/ -> Razor View’lar
+│ │── Auth/ -> Giriş-çıkış sayfaları
+│ │── Kisiler/ -> Kişi yönetim sayfaları
+│ │── Departman/ -> Departman yönetim sayfaları
+│ │── Shared/ -> Ortak layout ve partial view’lar
+│ │── _ViewImports.cshtml -> Razor view import ayarları
+│ │── _ViewStart.cshtml -> Razor view başlangıç ayarları
+│
+│── wwwroot/ -> Statik dosyalar (css, js, bootstrap)
+│── Properties/ -> Proje yapılandırma dosyaları
+│── Program.cs -> Uygulama başlangıç noktası
+│── appsettings.Development.json -> Konfigürasyon dosyası
+│── TelefonRehberi.csproj -> Proje dosyası
 ```
