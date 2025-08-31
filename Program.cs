@@ -12,6 +12,7 @@ builder.Services.AddControllersWithViews();
 var dbPath = Path.Combine(builder.Environment.ContentRootPath, "telefonrehberi.db");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlite($"Data Source={dbPath}"));
+Console.WriteLine("SQLite path -> " + dbPath);
 
 
 // 🔐 Cookie Authentication
@@ -77,5 +78,6 @@ using (var scope = app.Services.CreateScope())
     var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     SeedAdmin(db);
 }
+
 
 app.Run();
