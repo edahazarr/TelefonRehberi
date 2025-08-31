@@ -2,9 +2,6 @@
 
 Kurum içi telefon rehberi uygulaması. Kişi ve departman yönetimi, arama/filtreleme, sayfalama ve Excel’e aktarma özellikleri içerir. **.NET 8 + EF Core (Code-First, Migrations) + SQLite** ile geliştirilmiştir.
 
-<p align="center">
-  <img src="docs/screen-list.png" alt="Kişi Listesi" width="700">
-</p>
 
 ---
 
