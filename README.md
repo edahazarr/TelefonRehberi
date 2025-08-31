@@ -27,11 +27,13 @@ Kurum içi telefon rehberi uygulaması. Kişi ve departman yönetimi, arama/filt
 
 ---
 
-## 📦 Proje Yapısı
-'''TelefonRehberi/
+## 📂 Proje Yapısı
+
+```
+TelefonRehberi/
 ├── Controllers/ -> MVC Controller katmanı
 │ ├── KisilerController.cs -> Kişi CRUD işlemleri
-│ └── DepartmanController.cs-> Departman CRUD işlemleri
+│ └── DepartmanController.cs -> Departman CRUD işlemleri
 │
 ├── Data/
 │ └── ApplicationDbContext.cs -> EF Core DbContext
@@ -49,4 +51,5 @@ Kurum içi telefon rehberi uygulaması. Kişi ve departman yönetimi, arama/filt
 ├── wwwroot/ -> Statik dosyalar (css, js, bootstrap)
 ├── Program.cs -> Uygulama başlangıç noktası
 ├── appsettings.Development.json -> Konfigürasyon dosyası
-└── TelefonRehberi.csproj '''
+└── TelefonRehberi.csproj
+```
