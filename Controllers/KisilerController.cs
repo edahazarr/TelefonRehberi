@@ -12,7 +12,7 @@ using System.Linq;
 
 namespace TelefonRehberi.Controllers
 {
-    //[Authorize] // Rehber sayfalarını girişe kapat
+    [Authorize] // Rehber sayfalarını girişe kapat
     public class KisilerController : Controller
     {
         private readonly ApplicationDbContext _context;

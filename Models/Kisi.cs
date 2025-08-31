@@ -21,7 +21,6 @@ namespace TelefonRehberi.Models
     [Required(ErrorMessage = "Departman alanı zorunludur.")]
     public string Departman { get; set; }
     
-    
     public string? PasswordHash { get; set; }
 
     
